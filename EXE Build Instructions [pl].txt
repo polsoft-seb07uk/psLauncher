@@ -1,0 +1,69 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                        psLauncher v1.5.7 – Instrukcja budowania EXE                        ║
+║                                polsoft.ITS™ Group  •  2026                                 ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+WYMAGANIA
+─────────
+  • Windows 10/11 (x64)
+  • Python 3.10 lub nowszy  →  https://python.org/downloads/
+    ✔ Zaznacz "Add Python to PATH" podczas instalacji
+  • PyInstaller (instalowany automatycznie przez build.bat / build.ps1)
+
+STRUKTURA PLIKÓW
+────────────────
+  Umieść wszystkie pliki w JEDNYM katalogu:
+
+  build_dir\
+  ├── psLauncher.py       ← główny skrypt (wymagany)
+  ├── sandbox.py          ← moduł sandbox (wymagany)
+  ├── psLauncher.ico      ← ikona programu (wymagana)
+  ├── version_info.txt    ← metadane Windows (wymagany)
+  ├── psLauncher.spec     ← konfiguracja PyInstaller
+  ├── build.bat           ← skrypt budowania (CMD)  ← URUCHOM TEN
+  └── build.ps1           ← skrypt budowania (PowerShell, alternatywa)
+
+BUDOWANIE
+─────────
+  1. Otwórz CMD lub PowerShell w katalogu z plikami
+  2. Uruchom:  build.bat   (lub:  .\build.ps1)
+
+  Wynik:  dist\psLauncher.exe
+
+WYNIK BUDOWANIA
+───────────────
+  Jeden plik EXE – wygodny do dystrybucji.
+  Sandbox.py jest wbudowany wewnątrz (samodzielny, bez zależności).
+  Przy starcie EXE rozpakowuje się do %TEMP%\_MEIxxxxxx\
+  Stąd start jest nieco wolniejszy (~2-5s).
+
+  Katalog roboczy (config, backup) zapisywany jest w:
+    C:\.polsoft\psLauncher\
+  (niezależnie od lokalizacji EXE – portable config)
+
+OPCJONALNE ZALEŻNOŚCI
+──────────────────────
+  Zainstaluj przed buildem jeśli chcesz dołączyć do EXE:
+
+    pip install tkinterdnd2   ← drag & drop plików
+    pip install plyer         ← powiadomienia systemowe
+    pip install keyboard      ← globalne skróty klawiszowe
+
+  Bez nich psLauncher działa normalnie (graceful fallback).
+
+ROZWIĄZYWANIE PROBLEMÓW
+────────────────────────
+  • "Python nie znaleziony" → dodaj Python do PATH i uruchom ponownie
+  • Brak ikony w EXE       → upewnij się że psLauncher.ico jest w katalogu build
+  • Antywirus blokuje EXE  → dodaj wyjątek dla dist\psLauncher.exe
+                             (PyInstaller EXE często fałszywie flagowane)
+  • Błąd ModuleNotFoundError po uruchomieniu EXE
+    → dodaj brakujący moduł do listy "hidden" w psLauncher.spec
+
+AKTUALIZACJA WERSJI
+────────────────────
+  Przed buildem nowej wersji zaktualizuj w version_info.txt:
+    filevers=(X, Y, Z, 0)
+    prodvers=(X, Y, Z, 0)
+    StringStruct(u'FileVersion', u'X.Y.Z.0')
+    StringStruct(u'ProductVersion', u'X.Y.Z.0')
